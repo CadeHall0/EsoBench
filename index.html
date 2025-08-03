@@ -224,7 +224,7 @@
         }
 
         .mini-heatmap-cell[title]:hover::after {
-            animation-delay: 0.05s;
+            animation-delay: 0.2s;
         }
 
         .rank-cell {
@@ -481,30 +481,22 @@
 
         // Company icon mapping
         const companyIcons = {
+            'openai': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/openai.svg',
             'open-ai': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/openai.svg',
-            'anthropic': 'https://cdn.brandfetch.io/idmJWF3N06/theme/dark/symbol.svg?c=1bxid64Mup7aczewSAYMX&t=1721803183716',
-            'google': 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
-            'xai': 'https://cdn.brandfetch.io/iddjpnb3_W/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1739946163827'
-        };
-
-        // Company name mapping
-        const companyIcons = {
-            'open-ai': 'OpenAI',
-            'anthropic': 'Anthropic',
-            'google': 'Google',
-            'xai': 'xAI'
+            'anthropic': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/anthropic.svg',
+            'google': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/google.svg',
+            'xai': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/x.svg',
+            'x-ai': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/x.svg',
+            'meta': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/meta.svg',
+            'microsoft': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/microsoft.svg',
+            'mistral': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/mistral.svg',
+            'cohere': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/cohere.svg'
         };
 
         function getCompanyIcon(provider) {
             if (!provider) return null;
             const providerKey = provider.toLowerCase().replace(/[^a-z0-9-]/g, '');
             return companyIcons[providerKey] || null;
-        }
-
-        function getCompanyName(provider){
-            if (!provider) return null;
-            const providerKey = provider.toLowerCase().replace(/[^a-z0-9-]/g, '');
-            return companyNames[providerKey] || null;
         }
 
         async function loadBenchmarkData() {
@@ -635,7 +627,7 @@
                 const row = document.createElement('tr');
                 
                 const rank = getRankWithTies(sortedModels, index);
-                const provider = getCompanyName(provider);
+                const provider = modelData.provider || modelData.Provider || 'Unknown';
                 const companyIcon = getCompanyIcon(provider);
                 
                 // Create model cell with icon
