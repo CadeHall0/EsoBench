@@ -199,6 +199,7 @@
         .model-cell {
             display: flex;
             align-items: center;
+            min-height: 100%;
             height: 100%;
         }
 
@@ -503,6 +504,12 @@
             return companyIcons[providerKey] || null;
         }
 
+        function getCompanyName(provider) {
+            if (!provider) return 'Unknown';
+            const providerKey = provider.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            return companyNames[providerKey] || provider;
+        }
+
         async function loadBenchmarkData() {
             try {
                 const response = await fetch('All_Results.json');
@@ -633,6 +640,7 @@
                 const rank = getRankWithTies(sortedModels, index);
                 const provider = modelData.provider || modelData.Provider || 'Unknown';
                 const companyIcon = getCompanyIcon(provider);
+                const companyName = getCompanyName(provider);
                 
                 // Create model cell with icon
                 const modelCell = document.createElement('td');
@@ -670,7 +678,7 @@
                 `;
                 row.appendChild(modelCell);
                 row.innerHTML += `
-                    <td>${provider}</td>
+                    <td>${companyName}</td>
                     <td class="score-cell">${modelData['Clean Score'].toFixed(1)}</td>
                     <td>${modelData['Error Percent'].toFixed(1)}%</td>
                 `;
