@@ -50,9 +50,40 @@
             padding: 1rem;
             margin-bottom: 2rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        }
+
+        .top-nav {
+            background: transparent;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+
+        .top-nav .nav-tabs {
+            justify-content: center;
+            border-bottom: none;
+            gap: 2rem;
+        }
+
+        .top-nav .nav-tab {
+            border-bottom: none;
+            font-size: 0.95rem;
+            color: #666;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+        }
+
+        .top-nav .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+
+        .top-nav .nav-tab.active {
+            background: white;
+            color: #0366d6;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .nav-tabs {
@@ -178,6 +209,14 @@
 
         .mini-heatmap-cell {
             border-radius: 1px;
+        }
+
+        .mini-heatmap-cell[title] {
+            transition: opacity 0.1s;
+        }
+
+        .mini-heatmap-cell[title]:hover::after {
+            animation-delay: 0.2s;
         }
 
         .rank-cell {
