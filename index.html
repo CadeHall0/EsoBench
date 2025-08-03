@@ -224,7 +224,7 @@
         }
 
         .mini-heatmap-cell[title]:hover::after {
-            animation-delay: 0.2s;
+            animation-delay: 0.05s;
         }
 
         .rank-cell {
@@ -484,14 +484,27 @@
             'open-ai': 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/openai.svg',
             'anthropic': 'https://cdn.brandfetch.io/idmJWF3N06/theme/dark/symbol.svg?c=1bxid64Mup7aczewSAYMX&t=1721803183716',
             'google': 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
-            'xai': 'https://cdn.brandfetch.io/iddjpnb3_W/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1739946163827',
-            'x-ai': 'https://upload.wikimedia.org/wikipedia/commons/9/93/XAI_Logo.svg',
+            'xai': 'https://cdn.brandfetch.io/iddjpnb3_W/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1739946163827'
+        };
+
+        // Company name mapping
+        const companyIcons = {
+            'open-ai': 'OpenAI',
+            'anthropic': 'Anthropic',
+            'google': 'Google',
+            'xai': 'xAI'
         };
 
         function getCompanyIcon(provider) {
             if (!provider) return null;
             const providerKey = provider.toLowerCase().replace(/[^a-z0-9-]/g, '');
             return companyIcons[providerKey] || null;
+        }
+
+        function getCompanyName(provider){
+            if (!provider) return null;
+            const providerKey = provider.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            return companyNames[providerKey] || null;
         }
 
         async function loadBenchmarkData() {
@@ -622,7 +635,7 @@
                 const row = document.createElement('tr');
                 
                 const rank = getRankWithTies(sortedModels, index);
-                const provider = modelData.provider || modelData.Provider || 'Unknown';
+                const provider = getCompanyName(provider);
                 const companyIcon = getCompanyIcon(provider);
                 
                 // Create model cell with icon
