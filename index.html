@@ -136,6 +136,7 @@
             text-align: left;
             border-bottom: 1px solid #e1e4e8;
             vertical-align: middle;
+            height: 77px; /* Ensure consistent row height */
         }
 
         .leaderboard-table th {
@@ -199,8 +200,22 @@
         .model-cell {
             display: flex;
             align-items: center;
-            min-height: 100%;
-            height: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Ensure all table cells have consistent padding and sizing */
+        .leaderboard-table td {
+            position: relative;
+        }
+
+        /* Make the mini-heatmap cell match the model cell height */
+        .mini-heatmap {
+            display: grid;
+            grid-template-columns: repeat(6, 8px);
+            grid-template-rows: repeat(5, 8px);
+            gap: 1px;
+            padding: 4px;
+            margin: auto; /* Center the heatmap vertically */
         }
 
         .icon-placeholder {
@@ -210,20 +225,8 @@
             flex-shrink: 0;
         }
 
-        .mini-heatmap {
-            display: grid;
-            grid-template-columns: repeat(6, 8px);
-            grid-template-rows: repeat(5, 8px);
-            gap: 1px;
-            padding: 4px;
-        }
-
         .mini-heatmap-cell {
             border-radius: 1px;
-        }
-
-        .mini-heatmap-cell[title] {
-            transition: opacity 0.1s;
         }
 
         .mini-heatmap-cell[title]:hover::after {
