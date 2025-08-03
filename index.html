@@ -15,7 +15,8 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+            min-height: 100vh;
         }
 
         .container {
@@ -107,10 +108,42 @@
             font-weight: 600;
             position: sticky;
             top: 0;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
         }
 
-        .leaderboard-table tr:hover {
+        .leaderboard-table th:hover {
+            background-color: #e1e4e8;
+        }
+
+        .leaderboard-table th.sortable::after {
+            content: ' ↕';
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .leaderboard-table th.sort-asc::after {
+            content: ' ↑';
+            color: #0366d6;
+        }
+
+        .leaderboard-table th.sort-desc::after {
+            content: ' ↓';
+            color: #0366d6;
+        }
+
+        .leaderboard-table tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .leaderboard-table tbody tr:hover {
             background-color: #f6f8fa;
+        }
+
+        .leaderboard-table tbody tr.expanded {
+            background-color: #e6f3ff;
         }
 
         .rank-cell {
@@ -126,6 +159,37 @@
             font-family: 'Monaco', 'Menlo', monospace;
             font-size: 0.9rem;
             color: #666;
+        }
+
+        .expanded-row {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e1e4e8;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+            padding: 1rem;
+            max-width: 600px;
+        }
+
+        .task-header {
+            font-weight: 600;
+            text-align: center;
+            padding: 0.5rem;
+            background-color: #e1e4e8;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .score-cell-grid {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .methodology h2 {
@@ -222,11 +286,7 @@
             </div>
         </nav>
 
-        <div id="leaderboard" class="tab-content active">
-            <div id="stats" class="stats-grid">
-                <!-- Stats will be populated by JavaScript -->
-            </div>
-            
+        <div id="leaderboard" class="tab-content active">            
             <div id="loading" class="loading">Loading benchmark results...</div>
             <div id="error" class="error" style="display: none;"></div>
             
@@ -235,9 +295,8 @@
                     <tr>
                         <th>Rank</th>
                         <th>Model</th>
-                        <th>Clean Score</th>
-                        <th>Error Rate (%)</th>
-                        <th>Task Scores (1-6)</th>
+                        <th class="sortable" onclick="sortTable('score')">Score</th>
+                        <th class="sortable" onclick="sortTable('error')">Error Rate (%)</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboard-body">
@@ -331,15 +390,17 @@
         }
 
         // Load and display benchmark data
+        let benchmarkData = {};
+        let currentSort = { column: 'score', direction: 'desc' };
+
         async function loadBenchmarkData() {
             try {
                 const response = await fetch('All_Results.json');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
-                displayLeaderboard(data);
-                displayStats(data);
+                benchmarkData = await response.json();
+                displayLeaderboard();
                 document.getElementById('loading').style.display = 'none';
             } catch (error) {
                 console.error('Error loading benchmark data:', error);
@@ -350,57 +411,141 @@
             }
         }
 
-        function displayStats(data) {
-            const models = Object.keys(data);
-            const avgScore = Object.values(data).reduce((sum, model) => sum + model['Clean Score'], 0) / models.length;
-            const avgErrorRate = Object.values(data).reduce((sum, model) => sum + model['Error Percent'], 0) / models.length;
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'desc';
+            }
             
-            const statsHtml = `
-                <div class="stat-card">
-                    <div class="stat-value">${models.length}</div>
-                    <div class="stat-label">Models Evaluated</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${avgScore.toFixed(1)}</div>
-                    <div class="stat-label">Average Clean Score</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${avgErrorRate.toFixed(1)}%</div>
-                    <div class="stat-label">Average Error Rate</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">30</div>
-                    <div class="stat-label">Attempts per Model</div>
-                </div>
-            `;
+            // Update header styling
+            document.querySelectorAll('.leaderboard-table th').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+            });
             
-            document.getElementById('stats').innerHTML = statsHtml;
+            const header = event.target;
+            header.classList.add(currentSort.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+            
+            displayLeaderboard();
         }
 
-        function displayLeaderboard(data) {
-            // Sort models by Clean Score (descending)
-            const sortedModels = Object.entries(data).sort((a, b) => b[1]['Clean Score'] - a[1]['Clean Score']);
+        function getSortedModels() {
+            const models = Object.entries(benchmarkData);
             
+            models.sort((a, b) => {
+                let aVal, bVal;
+                
+                if (currentSort.column === 'score') {
+                    aVal = a[1]['Clean Score'];
+                    bVal = b[1]['Clean Score'];
+                } else if (currentSort.column === 'error') {
+                    aVal = a[1]['Error Percent'];
+                    bVal = b[1]['Error Percent'];
+                }
+                
+                if (currentSort.direction === 'asc') {
+                    return aVal - bVal;
+                } else {
+                    return bVal - aVal;
+                }
+            });
+            
+            return models;
+        }
+
+        function getRankWithTies(sortedModels, index) {
+            if (index === 0) return 1;
+            
+            const currentScore = sortedModels[index][1]['Clean Score'];
+            let rank = 1;
+            
+            for (let i = 0; i < index; i++) {
+                if (sortedModels[i][1]['Clean Score'] !== currentScore) {
+                    rank = i + 2;
+                } else {
+                    break;
+                }
+            }
+            
+            return rank;
+        }
+
+        function getScoreColor(score) {
+            // Linear interpolation from red (0) to green (100)
+            const red = Math.round(255 * (1 - score / 100));
+            const green = Math.round(255 * (score / 100));
+            return `rgb(${red}, ${green}, 0)`;
+        }
+
+        function toggleRowExpansion(modelName, rowElement) {
+            const existingExpanded = rowElement.nextElementSibling;
+            
+            if (existingExpanded && existingExpanded.classList.contains('expanded-row')) {
+                // Collapse
+                existingExpanded.remove();
+                rowElement.classList.remove('expanded');
+            } else {
+                // Expand
+                const expandedRow = document.createElement('tr');
+                expandedRow.classList.add('expanded-row');
+                
+                const expandedCell = document.createElement('td');
+                expandedCell.colSpan = 4;
+                
+                const taskGrid = document.createElement('div');
+                taskGrid.classList.add('task-grid');
+                
+                // Add headers
+                for (let task = 1; task <= 6; task++) {
+                    const header = document.createElement('div');
+                    header.classList.add('task-header');
+                    header.textContent = `Task ${task}`;
+                    taskGrid.appendChild(header);
+                }
+                
+                // Add score rows
+                const modelData = benchmarkData[modelName];
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    for (let task = 1; task <= 6; task++) {
+                        const scoreCell = document.createElement('div');
+                        scoreCell.classList.add('score-cell-grid');
+                        
+                        const taskScores = modelData[`Task ${task}`] || [0, 0, 0, 0, 0];
+                        const score = taskScores[attempt] || 0;
+                        
+                        scoreCell.textContent = score;
+                        scoreCell.style.backgroundColor = getScoreColor(score);
+                        scoreCell.style.color = score > 50 ? 'white' : 'black';
+                        
+                        taskGrid.appendChild(scoreCell);
+                    }
+                }
+                
+                expandedCell.appendChild(taskGrid);
+                expandedRow.appendChild(expandedCell);
+                
+                rowElement.parentNode.insertBefore(expandedRow, rowElement.nextSibling);
+                rowElement.classList.add('expanded');
+            }
+        }
+
+        function displayLeaderboard() {
+            const sortedModels = getSortedModels();
             const tbody = document.getElementById('leaderboard-body');
             tbody.innerHTML = '';
             
             sortedModels.forEach(([modelName, modelData], index) => {
                 const row = document.createElement('tr');
+                row.onclick = () => toggleRowExpansion(modelName, row);
                 
-                // Format task scores
-                const taskScores = [];
-                for (let i = 1; i <= 6; i++) {
-                    const scores = modelData[`Task ${i}`] || [0, 0, 0, 0, 0];
-                    const avg = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-                    taskScores.push(avg.toFixed(1));
-                }
+                const rank = getRankWithTies(sortedModels, index);
                 
                 row.innerHTML = `
-                    <td class="rank-cell">${index + 1}</td>
+                    <td class="rank-cell">${rank}</td>
                     <td><strong>${modelName}</strong></td>
                     <td class="score-cell">${modelData['Clean Score'].toFixed(1)}</td>
                     <td>${modelData['Error Percent'].toFixed(1)}%</td>
-                    <td class="task-scores">[${taskScores.join(', ')}]</td>
                 `;
                 
                 tbody.appendChild(row);
