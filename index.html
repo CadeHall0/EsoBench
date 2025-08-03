@@ -50,6 +50,9 @@
             padding: 1rem;
             margin-bottom: 2rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .nav-tabs {
@@ -118,23 +121,33 @@
         }
 
         .leaderboard-table th.sortable::after {
-            content: ' ↕';
-            font-size: 0.8em;
-            color: #666;
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-left: 8px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21 16-4 4-4-4'%3E%3C/path%3E%3Cpath d='M17 20V4'%3E%3C/path%3E%3Cpath d='m3 8 4-4 4 4'%3E%3C/path%3E%3Cpath d='M7 4v16'%3E%3C/path%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .leaderboard-table th.sortable:hover::after {
+            opacity: 1;
         }
 
         .leaderboard-table th.sort-asc::after {
-            content: ' ↑';
-            color: #0366d6;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230366d6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 8 4-4 4 4'%3E%3C/path%3E%3Cpath d='M7 4v16'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 1;
         }
 
         .leaderboard-table th.sort-desc::after {
-            content: ' ↓';
-            color: #0366d6;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230366d6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21 16-4 4-4-4'%3E%3C/path%3E%3Cpath d='M17 20V4'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 1;
         }
 
         .leaderboard-table tr {
-            cursor: pointer;
             transition: background-color 0.2s;
         }
 
@@ -142,8 +155,29 @@
             background-color: #f6f8fa;
         }
 
-        .leaderboard-table tbody tr.expanded {
-            background-color: #e6f3ff;
+        .company-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            vertical-align: middle;
+            border-radius: 3px;
+        }
+
+        .model-cell {
+            display: flex;
+            align-items: center;
+        }
+
+        .mini-heatmap {
+            display: grid;
+            grid-template-columns: repeat(6, 8px);
+            grid-template-rows: repeat(5, 8px);
+            gap: 1px;
+            padding: 4px;
+        }
+
+        .mini-heatmap-cell {
+            border-radius: 1px;
         }
 
         .rank-cell {
@@ -295,8 +329,10 @@
                     <tr>
                         <th>Rank</th>
                         <th>Model</th>
+                        <th>Company</th>
                         <th class="sortable" onclick="sortTable('score')">Score</th>
                         <th class="sortable" onclick="sortTable('error')">Error Rate (%)</th>
+                        <th>Performance</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboard-body">
@@ -393,6 +429,32 @@
         let benchmarkData = {};
         let currentSort = { column: 'score', direction: 'desc' };
 
+        // Company data - you can expand this
+        const companyData = {
+            'gpt-4': { company: 'OpenAI', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/openai.svg' },
+            'claude-3': { company: 'Anthropic', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/anthropic.svg' },
+            'gemini': { company: 'Google', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/google.svg' },
+            'grok': { company: 'xAI', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/x.svg' },
+            // Add more models as needed
+        };
+
+        function getCompanyInfo(modelName) {
+            // Try exact match first
+            if (companyData[modelName]) {
+                return companyData[modelName];
+            }
+            
+            // Try partial matches
+            for (const [key, data] of Object.entries(companyData)) {
+                if (modelName.toLowerCase().includes(key.toLowerCase())) {
+                    return data;
+                }
+            }
+            
+            // Default fallback
+            return { company: 'Unknown', icon: null };
+        }
+
         async function loadBenchmarkData() {
             try {
                 const response = await fetch('All_Results.json');
@@ -472,62 +534,44 @@
         }
 
         function getScoreColor(score) {
-            // Linear interpolation from red (0) to green (100)
-            const red = Math.round(255 * (1 - score / 100));
-            const green = Math.round(255 * (score / 100));
-            return `rgb(${red}, ${green}, 0)`;
+            // Nice gradient: red (0) -> yellow (50) -> green (100)
+            if (score <= 50) {
+                // Red to yellow
+                const ratio = score / 50;
+                const red = Math.round(220 * (1 - ratio) + 255 * ratio);
+                const green = Math.round(53 * (1 - ratio) + 235 * ratio);
+                const blue = Math.round(47 * (1 - ratio) + 59 * ratio);
+                return `rgb(${red}, ${green}, ${blue})`;
+            } else {
+                // Yellow to green
+                const ratio = (score - 50) / 50;
+                const red = Math.round(255 * (1 - ratio) + 34 * ratio);
+                const green = Math.round(235 * (1 - ratio) + 197 * ratio);
+                const blue = Math.round(59 * (1 - ratio) + 94 * ratio);
+                return `rgb(${red}, ${green}, ${blue})`;
+            }
         }
 
-        function toggleRowExpansion(modelName, rowElement) {
-            const existingExpanded = rowElement.nextElementSibling;
+        function createMiniHeatmap(modelData) {
+            const heatmap = document.createElement('div');
+            heatmap.classList.add('mini-heatmap');
             
-            if (existingExpanded && existingExpanded.classList.contains('expanded-row')) {
-                // Collapse
-                existingExpanded.remove();
-                rowElement.classList.remove('expanded');
-            } else {
-                // Expand
-                const expandedRow = document.createElement('tr');
-                expandedRow.classList.add('expanded-row');
-                
-                const expandedCell = document.createElement('td');
-                expandedCell.colSpan = 4;
-                
-                const taskGrid = document.createElement('div');
-                taskGrid.classList.add('task-grid');
-                
-                // Add headers
+            for (let attempt = 0; attempt < 5; attempt++) {
                 for (let task = 1; task <= 6; task++) {
-                    const header = document.createElement('div');
-                    header.classList.add('task-header');
-                    header.textContent = `Task ${task}`;
-                    taskGrid.appendChild(header);
+                    const cell = document.createElement('div');
+                    cell.classList.add('mini-heatmap-cell');
+                    
+                    const taskScores = modelData[`Task ${task}`] || [0, 0, 0, 0, 0];
+                    const score = taskScores[attempt] || 0;
+                    
+                    cell.style.backgroundColor = getScoreColor(score);
+                    cell.title = `Task ${task}, Attempt ${attempt + 1}: ${score}`;
+                    
+                    heatmap.appendChild(cell);
                 }
-                
-                // Add score rows
-                const modelData = benchmarkData[modelName];
-                for (let attempt = 0; attempt < 5; attempt++) {
-                    for (let task = 1; task <= 6; task++) {
-                        const scoreCell = document.createElement('div');
-                        scoreCell.classList.add('score-cell-grid');
-                        
-                        const taskScores = modelData[`Task ${task}`] || [0, 0, 0, 0, 0];
-                        const score = taskScores[attempt] || 0;
-                        
-                        scoreCell.textContent = score;
-                        scoreCell.style.backgroundColor = getScoreColor(score);
-                        scoreCell.style.color = score > 50 ? 'white' : 'black';
-                        
-                        taskGrid.appendChild(scoreCell);
-                    }
-                }
-                
-                expandedCell.appendChild(taskGrid);
-                expandedRow.appendChild(expandedCell);
-                
-                rowElement.parentNode.insertBefore(expandedRow, rowElement.nextSibling);
-                rowElement.classList.add('expanded');
             }
+            
+            return heatmap;
         }
 
         function displayLeaderboard() {
@@ -537,16 +581,41 @@
             
             sortedModels.forEach(([modelName, modelData], index) => {
                 const row = document.createElement('tr');
-                row.onclick = () => toggleRowExpansion(modelName, row);
                 
                 const rank = getRankWithTies(sortedModels, index);
+                const companyInfo = getCompanyInfo(modelName);
+                
+                // Create model cell with icon
+                const modelCell = document.createElement('td');
+                modelCell.classList.add('model-cell');
+                
+                if (companyInfo.icon) {
+                    const icon = document.createElement('img');
+                    icon.src = companyInfo.icon;
+                    icon.alt = companyInfo.company;
+                    icon.classList.add('company-icon');
+                    icon.onerror = () => icon.style.display = 'none'; // Hide if icon fails to load
+                    modelCell.appendChild(icon);
+                }
+                
+                const modelName_ = document.createElement('strong');
+                modelName_.textContent = modelName;
+                modelCell.appendChild(modelName_);
+                
+                // Create mini heatmap
+                const heatmapCell = document.createElement('td');
+                heatmapCell.appendChild(createMiniHeatmap(modelData));
                 
                 row.innerHTML = `
                     <td class="rank-cell">${rank}</td>
-                    <td><strong>${modelName}</strong></td>
+                `;
+                row.appendChild(modelCell);
+                row.innerHTML += `
+                    <td>${companyInfo.company}</td>
                     <td class="score-cell">${modelData['Clean Score'].toFixed(1)}</td>
                     <td>${modelData['Error Percent'].toFixed(1)}%</td>
                 `;
+                row.appendChild(heatmapCell);
                 
                 tbody.appendChild(row);
             });
