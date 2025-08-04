@@ -160,7 +160,7 @@
             width: 12px;
             height: 12px;
             margin-left: 8px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21 16-4 4-4-4'%3E%3C/path%3E%3Cpath d='M17 20V4'%3E%3C/path%3E%3Cpath d='m3 8 4-4 4 4'%3E%3C/path%3E%3Cpath d='M7 4v16'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8 3L10.5 6H5.5L8 3Z' fill='%23999'/%3E%3Cpath d='M8 13L5.5 10H10.5L8 13Z' fill='%23999'/%3E%3C/svg%3E");
             background-size: contain;
             background-repeat: no-repeat;
             opacity: 0.5;
@@ -172,12 +172,12 @@
         }
 
         .leaderboard-table th.sort-asc::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230366d6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 8 4-4 4 4'%3E%3C/path%3E%3Cpath d='M7 4v16'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8 3L10.5 6H5.5L8 3Z' fill='%230366d6'/%3E%3C/svg%3E");
             opacity: 1;
         }
 
         .leaderboard-table th.sort-desc::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230366d6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21 16-4 4-4-4'%3E%3C/path%3E%3Cpath d='M17 20V4'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8 13L5.5 10H10.5L8 13Z' fill='%230366d6'/%3E%3C/svg%3E");
             opacity: 1;
         }
 
@@ -562,6 +562,9 @@
                 } else if (currentSort.column === 'error') {
                     aVal = a[1]['Error Percent'];
                     bVal = b[1]['Error Percent'];
+                } else if (currentSort.column === 'solved') {
+                    aVal = a[1]['Percent Solved'];
+                    bVal = b[1]['Percent Solved'];
                 }
                 
                 if (currentSort.direction === 'asc') {
@@ -688,7 +691,7 @@
                 modelName_.textContent = modelName;
                 modelCell.appendChild(modelName_);
                 
-                // Create mini heatmap
+                // Create mini heatmap for Performance column
                 const heatmapCell = document.createElement('td');
                 heatmapCell.appendChild(createMiniHeatmap(modelData));
                 
@@ -700,6 +703,7 @@
                     <td>${companyName}</td>
                     <td class="score-cell">${modelData['Clean Score'].toFixed(1)}</td>
                     <td>${modelData['Error Percent'].toFixed(1)}%</td>
+                    <td class="score-cell">${modelData['Percent Solved'].toFixed(1)}%</td>
                 `;
                 row.appendChild(heatmapCell);
                 
