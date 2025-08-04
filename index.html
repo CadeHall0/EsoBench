@@ -19,15 +19,94 @@
         </nav>
 
         <div id="leaderboard" class="tab-content active">
-            <!-- Leaderboard content -->
+            <h2 style="margin-bottom: 2rem; color: #24292e; font-size: 2rem;">EsoLang Discovery Leaderboard</h2>
+            
+            <!-- These elements are required by your JavaScript -->
+            <div id="loading" class="loading">Loading benchmark results...</div>
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <table id="leaderboard-table" class="leaderboard-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Model</th>
+                        <th>Company</th>
+                        <th class="sortable" data-column="score">Score</th>
+                        <th class="sortable" data-column="error">Error Rate (%)</th>
+                        <th class="sortable" data-column="solved">Solved (%)</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Table content will be populated by JavaScript -->
+                </tbody>
+            </table>
         </div>
 
         <div id="methodology" class="tab-content methodology">
-            <!-- Methodology content -->
+            <h2>Methodology</h2>
+            
+            <h3>Overview</h3>
+            <p>This benchmark evaluates large language models' ability to learn and adapt in novel programming environments. Models are presented with a private esoteric programming language (esolang) and must solve computational tasks through iterative exploration and experimentation.</p>
+
+            <h3>Benchmark Structure</h3>
+            <p>The benchmark consists of 6 distinct programming tasks. For each task, models receive:</p>
+            <ul>
+                <li>One example program in the esolang demonstrating basic syntax</li>
+                <li>A task description specifying the desired computational goal</li>
+                <li>Access to an interpreter that executes their code and returns output</li>
+            </ul>
+
+            <h3>Evaluation Protocol</h3>
+            <p>Models interact with the interpreter iteratively, submitting code and receiving feedback. Key parameters:</p>
+            <ul>
+                <li><strong>Turn limit:</strong> Maximum 50 interactions per task attempt</li>
+                <li><strong>Attempts per task:</strong> 5 independent attempts</li>
+                <li><strong>Total attempts per model:</strong> 30 (6 tasks × 5 attempts)</li>
+            </ul>
+
+            <h3>Scoring System</h3>
+            <p>Task scores are calculated based on solution speed:</p>
+            <ul>
+                <li><strong>Turn 1 solution:</strong> 100 points</li>
+                <li><strong>Turn 50 solution:</strong> 2 points</li>
+                <li><strong>Linear interpolation:</strong> Points = 102 - (2 × turn_number)</li>
+                <li><strong>No solution:</strong> 0 points</li>
+            </ul>
+
+            <h3>Metrics</h3>
+            <ul>
+                <li><strong>Clean Score:</strong> Average score across all 30 attempts</li>
+                <li><strong>Error Rate:</strong> Percentage of attempts resulting in interpreter errors</li>
+                <li><strong>Task Scores:</strong> Individual scores for each of the 5 attempts per task</li>
+            </ul>
+
+            <h3>Design Rationale</h3>
+            <p>This benchmark tests models' capacity for:</p>
+            <ul>
+                <li>Rapid adaptation to unfamiliar syntax and semantics</li>
+                <li>Systematic exploration of new programming constructs</li>
+                <li>Learning from minimal examples and interpreter feedback</li>
+                <li>Hypothesis formation and testing in novel domains</li>
+            </ul>
         </div>
 
         <div id="citation" class="tab-content">
-            <!-- Citation content -->
+            <h2>Citation</h2>
+            <p>If you use this benchmark in your research, please cite:</p>
+            
+            <div class="citation-box">@misc{esolang_discovery_benchmark_2025,
+    title={EsoLang Discovery Leaderboard: A Benchmark for Evaluating 
+           AI Model Adaptation in Novel Programming Environments},
+    author={[Author Name]},
+    year={2025},
+    url={https://[username].github.io/esolang-benchmark},
+    note={Benchmark measuring large language model performance on 
+          esoteric programming language learning tasks}
+}</div>
+
+            <h3>BibTeX Entry</h3>
+            <p>Copy the above BibTeX entry for use in your academic references.</p>
         </div>
     </div>
 
