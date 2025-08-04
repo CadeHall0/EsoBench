@@ -147,6 +147,7 @@
             cursor: pointer;
             user-select: none;
             transition: background-color 0.2s;
+            z-index: 10; /* Ensure headers stay above content */
         }
 
         .leaderboard-table th:hover {
@@ -367,16 +368,13 @@
         </nav>
     </div>
 
-    <header>
-        <div class="container">
-            <h1>Esolang Learning Benchmark</h1>
-            <p class="subtitle">Evaluating AI models' ability to learn and adapt in novel programming environments</p>
-        </div>
-    </header>
+
 
     <div class="container">
 
-        <div id="leaderboard" class="tab-content active">            
+        <div id="leaderboard" class="tab-content active">
+            <h2 style="margin-bottom: 2rem; color: #24292e; font-size: 2rem;">EsoLang Discovery Leaderboard</h2>
+            
             <div id="loading" class="loading">Loading benchmark results...</div>
             <div id="error" class="error" style="display: none;"></div>
             
@@ -388,6 +386,7 @@
                         <th>Company</th>
                         <th class="sortable" onclick="sortTable('score')">Score</th>
                         <th class="sortable" onclick="sortTable('error')">Error Rate (%)</th>
+                        <th class="sortable" onclick="sortTable('solved')">Solved (%)</th>
                         <th>Performance</th>
                     </tr>
                 </thead>
@@ -449,13 +448,14 @@
             <h2>Citation</h2>
             <p>If you use this benchmark in your research, please cite:</p>
             
-            <div class="citation-box">
-@misc{esolang_learning_benchmark_2025,
-    title={Esolang Learning Benchmark: Evaluating AI Models' Adaptation to Novel Programming Environments},
-    author={[Your Name]},
+            <div class="citation-box">@misc{esolang_discovery_benchmark_2025,
+    title={EsoLang Discovery Leaderboard: A Benchmark for Evaluating 
+           AI Model Adaptation in Novel Programming Environments},
+    author={[Author Name]},
     year={2025},
-    url={https://[your-github-username].github.io/esolang-benchmark},
-    note={A benchmark for measuring large language models' ability to learn and adapt in novel programming contexts}
+    url={https://[username].github.io/esolang-benchmark},
+    note={Benchmark measuring large language model performance on 
+          esoteric programming language learning tasks}
 }</div>
 
             <h3>BibTeX Entry</h3>
@@ -577,11 +577,27 @@
         function getRankWithTies(sortedModels, index) {
             if (index === 0) return 1;
             
-            const currentScore = sortedModels[index][1]['Clean Score'];
+            let currentValue, compareValue;
+            if (currentSort.column === 'score') {
+                currentValue = sortedModels[index][1]['Clean Score'];
+            } else if (currentSort.column === 'error') {
+                currentValue = sortedModels[index][1]['Error Percent'];
+            } else if (currentSort.column === 'solved') {
+                currentValue = sortedModels[index][1]['Percent Solved'];
+            }
+            
             let rank = 1;
             
             for (let i = 0; i < index; i++) {
-                if (sortedModels[i][1]['Clean Score'] !== currentScore) {
+                if (currentSort.column === 'score') {
+                    compareValue = sortedModels[i][1]['Clean Score'];
+                } else if (currentSort.column === 'error') {
+                    compareValue = sortedModels[i][1]['Error Percent'];
+                } else if (currentSort.column === 'solved') {
+                    compareValue = sortedModels[i][1]['Percent Solved'];
+                }
+                
+                if (compareValue !== currentValue) {
                     rank = i + 2;
                 } else {
                     break;
