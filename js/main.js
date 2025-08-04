@@ -10,22 +10,29 @@ class EsolangBenchmark {
 
     async init() {
         console.log("Initializing EsolangBenchmark");
-        this.setupEventListeners();
+        this.setupTabListeners();
         await this.loadAndDisplayData();
+        this.setupSortListeners(); // Set up sorting after data is loaded
     }
 
-    setupEventListeners() {
-        console.log("Setting up event listeners");
+    setupTabListeners() {
+        console.log("Setting up tab listeners");
         
-        // Tab switching
+        // Tab switching only
         document.querySelectorAll('.nav-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 console.log("Tab clicked:", e.target.dataset.tab);
                 this.showTab(e.target.dataset.tab);
             });
         });
+        
+        console.log("Tab listeners set up complete");
+    }
 
-        // Table sorting
+    setupSortListeners() {
+        console.log("Setting up sort listeners");
+        
+        // Table sorting - only after data is loaded
         document.querySelectorAll('.sortable').forEach(header => {
             header.addEventListener('click', (e) => {
                 console.log("Sort header clicked:", e.target.dataset.column);
@@ -33,7 +40,7 @@ class EsolangBenchmark {
             });
         });
         
-        console.log("Event listeners set up complete");
+        console.log("Sort listeners set up complete");
     }
 
     showTab(tabName) {
