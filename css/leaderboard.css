@@ -1,0 +1,83 @@
+/* Leaderboard table */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 1rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ffffff;
+    vertical-align: middle;
+    height: 1rem;
+}
+
+.leaderboard-table th {
+    background-color: #f6f8fa;
+    font-weight: 600;
+    top: 0;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+
+/* Sorting indicators */
+.leaderboard-table th.sortable::after {
+    content: '';
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8 2L11 6H5L8 2Z' fill='%23666' stroke='%23666' stroke-width='0.5'/%3E%3Cpath d='M8 14L5 10H11L8 14Z' fill='%23666' stroke='%23666' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.6;
+    vertical-align: text-top;
+}
+
+.leaderboard-table th.sortable.sort-asc::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8 4L11 10H5L8 4Z' fill='%23333' stroke='%23333' stroke-width='0.5'/%3E%3C/svg%3E");
+    opacity: 1;
+}
+
+.leaderboard-table th.sortable.sort-desc::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M8 12L5 6H11L8 12Z' fill='%23333' stroke='%23333' stroke-width='0.5'/%3E%3C/svg%3E");
+    opacity: 1;
+}
+
+/* Mini heatmap */
+.mini-heatmap {
+    display: grid;
+    grid-template-columns: repeat(6, 0.7rem);
+    grid-template-rows: repeat(5, 0.7rem);
+    gap: 2px;
+    margin: auto;
+    width: fit-content;
+}
+
+.mini-heatmap-cell {
+    border-radius: 0;
+}
+
+/* Model cell styling */
+.model-cell {
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.company-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.icon-placeholder {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}

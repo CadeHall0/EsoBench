@@ -1,0 +1,7 @@
+<nav class="top-nav">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="leaderboard">Leaderboard</button>
+            <button class="nav-tab" data-tab="methodology">Methodology</button>
+            <button class="nav-tab" data-tab="citation">Citation</button>
+        </div>
+    </nav>
