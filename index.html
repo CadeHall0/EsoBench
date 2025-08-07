@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esolang Learning Benchmark</title>
+    <title>EsoBench</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/leaderboard.css">
@@ -12,33 +12,40 @@
     <div class="container">
         <nav class="top-nav">
             <div class="nav-tabs">
-                <button class="nav-tab active" data-tab="leaderboard" >Results</button>
-                <button class="nav-tab" data-tab="methodology">Methodology</button>
-                <button class="nav-tab" data-tab="citation">Citation</button>
+                <button class="nav-tab active" data-tab="top" >Top</button>
+                <button class="nav-tab" data-tab="graph" >Chart</button>
+                <button class="nav-tab" data-tab="leaderboard" >Leaderboard</button>
+                <button class="nav-tab" data-tab="methodology">Details</button>
+                <button class="nav-tab" data-tab="citation">BibTeX</button>
             </div>
         </nav>
 
         <div >
-            <div class="content-box">
+            <div class="content-box" id="top" style="scroll-margin-top: 7rem;">
                 <h1 style="text-align: center;">EsoBench</h1>
-                <h3 style="text-align: center;">Some nice words summarising the benchmark</h3>
-                <p style="text-align: center;">Cade Hall 2025</p>
-                <p>These are some test words about the graph above. Maybe I'm explaining something interesting or adding insight.
-                    These are some test words about the graph above. Maybe I'm explaining something interesting or adding insight.
-                    These are some test words about the graph above. Maybe I'm explaining something interesting or adding insight.
-                    These are some test words about the graph above. Maybe I'm explaining something interesting or adding insight.
-                    These are some test words about the graph above. Maybe I'm explaining something interesting or adding insight.
+                <h3 style="text-align: center;">Learning a Private <a href="https://en.wikipedia.org/wiki/Esoteric_programming_language" target="_blank" class="txtlink" style="font-weight: 350;">Esolang</a> Through Exploration</h3>
+                <p style="text-align: center; margin: 2.5rem 0rem;">Cade Hall 2025</p>
+                <p style="margin-bottom: 1rem;">
+                    Introducing <strong>EsoBench</strong>, an exploratory programming benchmark that tests how AI systems learn unknown languages through experimentation. 
+                    Models must discover the syntax and semantics of a novel esoteric programming language (esolang) by writing code and observing outputs from an interpreter.
+                    The benchmark contains 6 tasks of increasing difficulty, with 5 instances per task. Each task provides only a token list for the esolang, an example program, 
+                    its output, and a problem to solve. Models have 50 attempts to experiment with the interpreter and find a working solution.
+                    Task 1 requires only pattern matching, while Task 6 demands learning language features not shown the example.
+                </p>
+                <p>
+                    Models score 100 points for solving on the first attempt, decreasing by 2 points per attempt down to 2 points at attempt 50. 
+                    The final score averages across all 30 task instances. A perfect score of 100 is effectively impossible, as the harder tasks 
+                    require some experimentation to understand the language's syntax.
                 </p>
             </div>
 
-            <div class="content-box" style="scroll-margin-top: 1rem"; id="leaderboard">
+            <div class="content-box" style="scroll-margin-top: 5rem" id="graph">
                 <h2>Model Scores</h2>
-                <canvas style="margin-bottom: 2rem;" id="performance-chart" width="800" height="400"></canvas>
-                <p>These are some test words about the graph above. Maybe I'm explaining something interesting or adding insight.</p>
+                <canvas style="margin-bottom: 2rem;" id="performance-chart" width="60rem" height="40rem"></canvas>
             </div>
             
-            <div class="content-box">
-                <h2 style="margin-bottom: 1.5rem; margin-top: 1rem; color: #24292e;">EsoBench leaderboard</h2>
+            <div class="content-box" id="leaderboard" style="scroll-margin-top: 5rem">
+                <h2>EsoBench Leaderboard</h2>
                 <div id="loading" class="loading">Loading benchmark results...</div>
                 <div id="error" class="error" style="display: none;"></div>
                 
@@ -47,8 +54,9 @@
                         <tr>
                             <th>Rank</th>
                             <th>Model</th>
-                            <th style="padding-right: 10rem;">Company</th>
-                            <th style="text-align: center;" class="sortable" data-column="score">Score (%)</th>
+                            <th style="text-align: center;">Company</th>
+
+                            <th style="text-align: center;" class="sortable" data-column="score">Score</th>
                             <th style="text-align: center;" class="sortable" data-column="solved">Solved (%)</th>
                             <th style="text-align: center;">Performance</th>
                         </tr>
@@ -60,74 +68,102 @@
             </div>
         </div>
 
-        <div style="scroll-margin-top: 1rem"; id="methodology">
+        <div style="scroll-margin-top: 5rem" id="methodology">
             <div class="content-box">
-                <h2>Methodology</h2>
+                <h2>Details</h2>
                 
-                <h3>Overview</h3>
-                <p>This benchmark evaluates large language models' ability to learn and adapt in novel programming environments. Models are presented with a private esoteric programming language (esolang) and must solve computational tasks through iterative exploration and experimentation.</p>
+                <h4>Benchmark Design</h4>
+                <p>
+                    <strong>Esoteric Programming Languages</strong><br>
+                    The current standard for AI benchmarks is a comprehensive suite of questions that are either multiple choice, or have one verifiably correct answer (think mathematics). 
+                    I wanted to design a benchmark where the models are placed into a situation with a goal, and are then allowed to explore and experiment. I cannot present them with new 
+                    science to uncover, and they are already aware of most programming languages. Esolangs are a nice solution here, as they are easy to make and can be constructed in ways 
+                    unlike traditional programming languages. Also, a custom esolang can easily be kept private and off the internet, allowing the benchmark to be used for models into the 
+                    future.
+                    <br><br>
+                    <strong>The Esolang</strong><br>
+                    I cannot go into detail as the esolang should remain private, however I can give an idea of its depth. The language uses a total of 22 characters (10 of which are numbers) 
+                    and can print arbitrary strings and integers. Programs can perform arithmetic and loops. There are no native if statements, however it is possible to write code that 
+                    branches dependant on the value of an integer.
+                    <br><br>
+                    <strong>Task Complexity</strong><br>
+                    There are 6 tasks of increasing complexity. Each task contains an example program and output, and a problem to be solved. Here is the approximate difficulty scaling, 
+                    detailing how much knowledge of the language is needed to find a solution:
+                    <ul style="margin-left: 1.5rem; padding: 0.5rem;">
+                        <li><p><strong>Task 1:</strong> No knowledge</p></li>
+                        <li><p><strong>Task 2:</strong> Minimal knowledge with relevant example</p></li>
+                        <li><p><strong>Task 3:</strong> Major knowledge with relevant example</p></li>
+                        <li><p><strong>Task 4:</strong> Major knowledge with minimal example</p></li>
+                        <li><p><strong>Task 5:</strong> Full knowledge with relevant example</p></li>
+                        <li><p><strong>Task 6:</strong> Full knowledge with minimal example</p></li> 
+                    </ul>
+                </p>
 
-                <h3>Benchmark Structure</h3>
-                <p>The benchmark consists of 6 distinct programming tasks. For each task, models receive:</p>
-                <ul>
-                    <li>One example program in the esolang demonstrating basic syntax</li>
-                    <li>A task description specifying the desired computational goal</li>
-                    <li>Access to an interpreter that executes their code and returns output</li>
-                </ul>
+                <h4>Evaluation & Scoring</h4>
+                <p>
+                    <strong>Correct Solutions</strong><br>
+                    Each task is a simple programming problem that requires printing outputs of some algorithm. There are many programs that are technically correct, so we instead 
+                    compare the outputs of the submitted programs to the expected output. If they match, that task is marked for closer inspection. It is of course possible for the 
+                    model to manually calculate the expected outputs and instead write a simpler program that directly prints the results, so any tentative solutions are checked to 
+                     ensure that the submitted program does actually do the calculations.
+                    <br><br>
+                    <strong>Scoring Points</strong><br>
+                    Models earn points based on how quickly they find a correct solution, with the intent being that smarter models should find solutions more quickly on average. 
+                    Scoring points instead of a binary win/lose system allows for more granularity in the results. For example, 9 of the 16 initial models tested solved 16.67% of 
+                    the problems, but the points let us see more detail by spreading the models out over 12.5 - 16.7 points.
+                </p>
 
-                <h3>Evaluation Protocol</h3>
-                <p>Models interact with the interpreter iteratively, submitting code and receiving feedback. Key parameters:</p>
-                <ul>
-                    <li><strong>Turn limit:</strong> Maximum 50 interactions per task attempt</li>
-                    <li><strong>Attempts per task:</strong> 5 independent attempts</li>
-                    <li><strong>Total attempts per model:</strong> 30 (6 tasks × 5 attempts)</li>
-                </ul>
+                <h4>Experimental Setup</h4>
+                <p>
+                    <strong>API Parameters</strong><br>
+                    All models were evaluated under the same conditions with a simple system prompt with temperature = 1 and top_p = 1. No model responses were truncated due to maximum 
+                    output tokens. Reasoning models are tested at their default settings unless specified (o4-mini and o3 for example have been tested at default and high). If there 
+                    are no distinct reasoning tiers (e.g. Gemini), then the reasoning token allowance is maxed out.
+                </p>
 
-                <h3>Scoring System</h3>
-                <p>Task scores are calculated based on solution speed:</p>
-                <ul>
-                    <li><strong>Turn 1 solution:</strong> 100 points</li>
-                    <li><strong>Turn 50 solution:</strong> 2 points</li>
-                    <li><strong>Linear interpolation:</strong> Points = 102 - (2 × turn_number)</li>
-                    <li><strong>No solution:</strong> 0 points</li>
-                </ul>
-
-                <h3>Metrics</h3>
-                <ul>
-                    <li><strong>Clean Score:</strong> Average score across all 30 attempts</li>
-                    <li><strong>Error Rate:</strong> Percentage of attempts resulting in interpreter errors</li>
-                    <li><strong>Task Scores:</strong> Individual scores for each of the 5 attempts per task</li>
-                </ul>
-
-                <h3>Design Rationale</h3>
-                <p>This benchmark tests models' capacity for:</p>
-                <ul>
-                    <li>Rapid adaptation to unfamiliar syntax and semantics</li>
-                    <li>Systematic exploration of new programming constructs</li>
-                    <li>Learning from minimal examples and interpreter feedback</li>
-                    <li>Hypothesis formation and testing in novel domains</li>
-                </ul>
+                <h4>Notable Results</h4>
+                <p>
+                    <strong>Grok 4 & Cheating</strong><br>
+                    The initial results showed that Grok 4 appeared to solve both task 4 and task 6. However, closer examination of the submitted code revealed some interesting details. 
+                    For task 6, the solution simply printed the expected outputs rather than actually calculating them. Task 4 presented a more nuanced situation. This task required 
+                     creating a non-terminating program that generates an infinite sequence. While the interpreter can handle such programs by displaying only a truncated portion of 
+                     the output, Grok 4 managed to exploit this. It wrote code that computed a finite number of terms, but calculated enough terms that the output was still truncated 
+                     by the interpreter, ultimately matching the expected result.
+                    <br><br>
+                    <strong>o3 Performing Badly</strong><br>
+                    o3's score is perhaps the most surprising here, as both the default medium and high reasoning effort fail to beat Claude 3.7 sonnet or Gemini 2.5 flash. Looking into 
+                    its responses during the task, the reason becomes clear. For o3, about 48% of its messages failed to include any code to run, meaning it was learning about the esolang 
+                    more slowly than the other models. For o3-high, this drops to 40%, which is an improvement but the model is still failing to use its turns to learn about the esolang. 
+                    For some context, all Claude models have a 0% rate of not providing code, and Grok 4 had a rate of 7%. This seems to be a problem unique to o3.
+                    <br><br>
+                    <strong>o3-mini Perfect Task 1</strong><br>
+                    Most models do well on task 1 and several have at least one perfect attempt, where their first response contains a solution. Task 1 is purely pattern matching, but 
+                    only o3-mini was able to score a perfect 100 on all 5 attempts. It's interesting that this success doesn't translate onto the other tasks, as it failed to pick up 
+                    any other points.
+                </p>
             </div>
 
         </div>
 
-        <div style="scroll-margin-top: 1rem"; id="citation">
+        <!--
+        <div style="scroll-margin-top: 5rem" id="observations">
             <div class="content-box">
-                <h2>Citation</h2>
-                <p>If you use this benchmark in your research, please cite:</p>
-                
-                <div class="citation-box">@misc{esolang_discovery_benchmark_2025,
-                    title={EsoLang Discovery Leaderboard: A Benchmark for Evaluating 
-                    AI Model Adaptation in Novel Programming Environments},
-                    author={[Author Name]},
-                    year={2025},
-                    url={https://[username].github.io/esolang-benchmark},
-                    note={Benchmark measuring large language model performance on 
-                    esoteric programming language learning tasks}
-                }</div>
-
-                <h3>BibTeX Entry</h3>
-                <p>Copy the above BibTeX entry for use in your academic references.</p>
+                <h2>Observations</h2>
+                <canvas style="margin-bottom: 2rem;" id="meanscatter" width="60rem" height="40rem"></canvas>
+            </div>
+        </div>
+        -->
+        
+        <div style="scroll-margin-top: 1rem" id="citation">
+            <div class="content-box">
+                <h2>BibTeX</h2>
+                <div class="citation-box">@misc{esobench,
+    author = {Cade Hall},
+    title = {EsoBench: Learning a Private Esolang Through Exploration},
+    year = {2025},
+    url = {https://github.com/CadeHall0/EsoBench},
+}</div>
+                <p><i>Copy the above BibTeX entry for use in your academic references.</i></p>
             </div>
         </div>
     </div>

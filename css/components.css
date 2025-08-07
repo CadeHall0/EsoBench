@@ -1,12 +1,13 @@
 /* Navigation */
 .top-nav {
     position: fixed;
-    left: 1rem;
+    top: 0rem;
+    left: 0rem;
+    right: 0rem;
     z-index: 1000;
-    background: white;
+    background: var(--contentbg);
     margin-bottom: 2rem;
-    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
-    border-radius: 0.7rem;
+    box-shadow: 0rem 0.2rem 0.3rem var(--shadow)
 }
 
 .nav-tabs {
@@ -17,9 +18,9 @@
 }
 
 .nav-tab {
-    border-bottom: 3px solid transparent;
+    border-bottom: 0.3rem solid transparent;
     font-size: 1rem;
-    color: #586069;
+    color: var(--textlight);
     background: transparent;
     border-radius: 0rem;
     padding: 1rem 1.5rem;
@@ -32,23 +33,23 @@
 }
 
 .nav-tab:hover {
-    background: #f6f8fa;
-    color: #24292e;
-    border-bottom-color: #d1d9e0;
+    background: var(--bgtint);
+    color: var(--textdark);
+    border-bottom-color: var(--bgtintdark);
 }
 
 .nav-tab.active {
     background: transparent;
-    color: #0366d6;
+    color: var(--accent);
     font-weight: 500;
-    border-bottom-color: #0366d6;
+    border-bottom-color: var(--accent);
 }
 
 .content-box{
-    background: white;
+    background: var(--contentbg);
     border-radius: 0.7rem;
-    padding: 1rem 2rem;
-    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+    padding: 1rem 2rem 2rem 2rem;
+    box-shadow: 0rem 0.2rem 0.3rem var(--shadow);
     margin-bottom: 2rem;
 }
 
@@ -56,37 +57,46 @@
 .loading {
     text-align: center;
     padding: 2rem;
-    color: #666;
+    color: var(--textlight);
 }
 
 .error {
-    background-color: #ffeaea;
-    border: 1px solid #d73a49;
-    border-radius: 6px;
+    background-color: var(--warninglight);
+    border: 1px solid var(--warning);
+    border-radius: 0.3rem;
     padding: 1rem;
-    color: #d73a49;
+    color: var(--warning);
     margin: 1rem 0;
 }
 
 .citation-box {
-    background-color: #f6f8fa;
-    border: 2px solid #e1e4e8;
-    border-radius: 0px;
+    background-color: var(--background);
+    border: 1px solid var(--bgtint);
+    border-radius: 0.3rem;
     padding: 1rem;
     font-family: 'Monaco', 'Menlo', monospace;
     font-size: 0.9rem;
     overflow-x: auto;
-    margin: 1rem 0;
+    margin: 0rem 0rem 2rem 0rem;
     white-space: pre-line;
+    white-space: pre;
 }
 
 .chart-container h3 {
     margin-bottom: 1rem;
-    color: #24292e;
     text-align: center;
 }
 
 #performance-chart {
     max-width: 100%;
     height: auto;
+}
+
+.txtlink {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+ul li::marker {
+    color: var(--textlight);
 }

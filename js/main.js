@@ -11,6 +11,9 @@ class EsolangBenchmark {
         this.setupTabListeners();
         await this.loadAndDisplayData();
         this.setupSortListeners();
+        const benchmarkData = this.dataLoader.benchmarkData;
+        this.chartUtils.createBarChart(benchmarkData, 'performance-chart');
+        //this.chartUtils.createScatterPlot(benchmarkData, 'meanscatter');
     }
 
     setupTabListeners() {
@@ -86,7 +89,7 @@ class EsolangBenchmark {
 
     displayLeaderboard() {
         const benchmarkData = this.dataLoader.benchmarkData;
-        
+
         if (!benchmarkData || Object.keys(benchmarkData).length === 0) {
             this.showError("No benchmark data available");
             return;
@@ -112,14 +115,14 @@ class EsolangBenchmark {
         });
         
         document.getElementById('leaderboard-table').style.display = 'table';
-
-        this.chartUtils.createBarChart(benchmarkData, 'performance-chart');
     }
 
     createTableRow(modelName, modelData, sortedModels, index) {
+        const rowColor = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
+
         const row = document.createElement('tr');
         if (index%2 == 1)
-            row.style.background = '#f3f3f3ff'
+            row.style.background = rowColor;
         var rank = this.tableUtils.getRankWithTies(sortedModels, index, this.tableUtils.currentSort.column);
         
         const provider = modelData.provider || modelData.Provider || 'Unknown';
@@ -141,11 +144,7 @@ class EsolangBenchmark {
                 icon.parentNode.replaceChild(placeholder, icon);
             };
             modelCell.appendChild(icon);
-        } else {
-            const placeholder = document.createElement('div');
-            placeholder.classList.add('icon-placeholder');
-            modelCell.appendChild(placeholder);
-        }
+        } 
         
         const modelNameElement = document.createElement('span');
         modelNameElement.textContent = modelName;
@@ -168,15 +167,13 @@ class EsolangBenchmark {
         
         const companyCell = document.createElement('td');
         companyCell.textContent = companyName;
+        companyCell.style.textAlign = 'center';
         
         const scoreCell = document.createElement('td');
         scoreCell.classList.add('score-cell');
-        scoreCell.textContent = modelData['Clean Score'].toFixed(1) + '%';
+        scoreCell.textContent = modelData['Clean Score'].toFixed(1);
         scoreCell.style.textAlign = 'center';
-        
-        const errorCell = document.createElement('td');
-        errorCell.textContent = modelData['Error Percent'].toFixed(1) + '%';
-        errorCell.style.textAlign = 'center';
+        scoreCell.style.fontWeight = '700';
         
         const solvedCell = document.createElement('td');
         solvedCell.classList.add('score-cell');

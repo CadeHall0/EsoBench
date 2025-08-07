@@ -9,13 +9,12 @@
 .leaderboard-table td {
     padding: 1rem 1rem;
     text-align: left;
-    border-bottom: 1px solid #ffffff;
     vertical-align: middle;
     height: 1rem;
 }
 
 .leaderboard-table th {
-    background-color: #f6f8fa;
+    background-color: var(--bgtint);
     font-weight: 600;
     top: 0;
     cursor: pointer;
@@ -51,15 +50,43 @@
 /* Mini heatmap */
 .mini-heatmap {
     display: grid;
-    grid-template-columns: repeat(6, 0.7rem);
-    grid-template-rows: repeat(5, 0.7rem);
-    gap: 2px;
+    grid-template-columns: repeat(6, 1rem);
+    grid-template-rows: repeat(5, 1rem);
     margin: auto;
     width: fit-content;
 }
 
 .mini-heatmap-cell {
     border-radius: 0;
+    position: relative;
+}
+
+.mini-heatmap-cell[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.2rem 0.3rem;
+    border-radius: 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.mini-heatmap-cell[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    border: 0.4rem solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
 }
 
 /* Model cell styling */
@@ -72,12 +99,12 @@
     width: 1.5rem;
     height: 1.5rem;
     margin-right: 0.5rem;
-    vertical-align: middle;
+    vertical-align: text-top;
 }
 
 .icon-placeholder {
     width: 1.5rem;
     height: 1.5rem;
     margin-right: 0.5rem;
-    flex-shrink: 0;
+    vertical-align: text-top;
 }
