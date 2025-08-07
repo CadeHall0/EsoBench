@@ -191,4 +191,16 @@
     "Task 5": [0, 0, 0, 0, 0],
     "Task 6": [0, 0, 0, 0, 0]
   }
+    "claude-opus-4-1-20250805": {
+    "Error Percent": 0.0,
+    "Clean Score": 19.27,
+    "Percent Solved": 30.0,
+    "Provider": "anthropic",
+    "Task 1": [86, 90, 92, 94, 88],
+    "Task 2": [46, 14, 0, 46, 22],
+    "Task 3": [0, 0, 0, 0, 0],
+    "Task 4": [0, 0, 0, 0, 0],
+    "Task 5": [0, 0, 0, 0, 0],
+    "Task 6": [0, 0, 0, 0, 0]
+  }
 }
