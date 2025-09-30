@@ -231,6 +231,7 @@
     "Error Percent": 0.0,
     "Clean Score": 16.33,
     "Percent Solved": 20.0,
+    "Provider" : "anthropic",
     "Task 1": [90, 96, 94, 100, 94],
     "Task 2": [0, 0, 0, 0, 16],
     "Task 3": [0, 0, 0, 0, 0],
