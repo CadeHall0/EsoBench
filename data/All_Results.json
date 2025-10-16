@@ -238,5 +238,17 @@
     "Task 4": [0, 0, 0, 0, 0],
     "Task 5": [0, 0, 0, 0, 0],
     "Task 6": [0, 0, 0, 0, 0]
+  },
+  "claude-haiku-4-5-20251001": {
+    "Error Percent": 8.75,
+    "Clean Score": 3.27,
+    "Percent Solved": 3.33,
+    "Provider" : "anthropic",
+    "Task 1": [98, 0, 0, 0, 0],
+    "Task 2": [0, 0, 0, 0, 0],
+    "Task 3": [0, 0, 0, 0, 0],
+    "Task 4": [0, 0, 0, 0, 0],
+    "Task 5": [0, 0, 0, 0, 0],
+    "Task 6": [0, 0, 0, 0, 0]
   }
 }
